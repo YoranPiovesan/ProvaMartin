@@ -1,10 +1,15 @@
 package com.view.produto;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
+
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import org.junit.Test;
 
 import com.dao.ProdutoDAO;
 import com.entity.Produto;
@@ -24,6 +29,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import junit.framework.Assert;
 
 public class ControllerProduto extends Application implements Initializable {
 
@@ -55,7 +61,7 @@ public class ControllerProduto extends Application implements Initializable {
     private Button buttonAlterar;
     
     @FXML
-    void DeletarProduto(ActionEvent event) {
+  public  void DeletarProduto(ActionEvent event) {
     	Alert alert = new Alert(AlertType.CONFIRMATION);
     	alert.setTitle("Deletar Produto");
     	alert.setHeaderText("Você está prestes a deletar um produto");
@@ -63,14 +69,14 @@ public class ControllerProduto extends Application implements Initializable {
     	Optional<ButtonType> result = alert.showAndWait();
     	if (result.get() == ButtonType.OK){
     		Produto produto= pegaDadosID();
-        	int qtde = new ProdutoDAO().deletar(produto.getId());
+    		boolean qtde = new ProdutoDAO().deletar(produto.getId());
         	limpaCampos();
         	listarProduto();
     	}
     	
     }
     @FXML
-    void AlterarProduto(ActionEvent event) {
+   public void AlterarProduto(ActionEvent event) {
     	Produto produto= pegaDadosID();
     	if(String.valueOf(produto.getId()) == null || String.valueOf(produto.getId()) =="") {
     		Alert alert = new Alert(AlertType.WARNING);
@@ -87,13 +93,13 @@ public class ControllerProduto extends Application implements Initializable {
         	if (result.get() == ButtonType.OK){
         	
     		limpaCampos();
-    		int qtde = new ProdutoDAO().alterar(produto);
+    		boolean qtde = new ProdutoDAO().alterar(produto);
     		listarProduto();
         	}
     	}
     }
     @FXML
-    void buscarProduto(ActionEvent event) {
+   public void buscarProduto(ActionEvent event) {
 		String idString = textFieldFindID.getText();
 		Produto produto = null;
 		if (!idString.equals("")) {
@@ -114,18 +120,20 @@ public class ControllerProduto extends Application implements Initializable {
 		textFieldFindID.clear();
     }
     @FXML
-    void inserirProduto(ActionEvent event) {
+    public void inserirProduto(ActionEvent event) {
+    	
     	Produto produto = pegaDados();
-
 		limpaCampos();
-		int qtde = new ProdutoDAO().inserir(produto);
+		System.out.println(produto);
+		boolean qtde = new ProdutoDAO().inserir(produto);
+		
 		listarProduto();
     }
 	public void execute() {
 		launch();
 	}
 	
-	private void limpaCampos() {
+	public void limpaCampos() {
 		textFieldTipo.clear();
 		textFieldPreco.clear();
 		textFieldNome.clear();
@@ -150,17 +158,21 @@ public class ControllerProduto extends Application implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		listarProduto();
 	}
-	private Produto pegaDados() {
+	public Produto pegaDados() {
 		return new Produto(textFieldNome.getText(), textFieldTipo.getText(), Float.valueOf(textFieldPreco.getText()));
 	}
-	private Produto pegaDadosID() {
+	public Produto pegaDadosID() {
 		if(labelID.getText() == null || labelID.getText() == ""){
 			return null;
 		}
 		return new Produto(Integer.valueOf(labelID.getText()), textFieldNome.getText(), textFieldTipo.getText(), Float.valueOf(textFieldPreco.getText()));
 	}
+	
+	public boolean Teste() {
+		return true;	
+	}
     
-	private void listarProduto() {
+	public void listarProduto() {
 		textAreaListProdutos.clear();
 		List<Produto> listaProduto = new ProdutoDAO().listAll();
 		listaProduto.forEach(produto -> {
